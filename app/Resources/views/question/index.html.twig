@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Questions list</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Body</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in questions %}
+            <tr>
+                <td><a href="{{ path('question_show', { 'id': question.id }) }}">{{ question.id }}</a></td>
+                <td>{{ question.title }}</td>
+                <td>{{ question.body }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('question_show', { 'id': question.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('question_edit', { 'id': question.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        {{ knp_pagination_render(questions) }}
+    </div>
+    <ul>
+        <li>
+            <a href="{{ path('question_new') }}">Create a new question</a>
+        </li>
+    </ul>
+{% endblock %}

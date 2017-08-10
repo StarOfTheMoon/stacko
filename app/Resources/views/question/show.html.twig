@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <!-- <h1>Question</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ question.id }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ question.title }}</td>
+            </tr>
+            <tr>
+                <th>Body</th>
+                <td>{{ question.body }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('question_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('question_edit', { 'id': question.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input class="btn" type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul> -->
+<h1>Question</h1>
+<h2>{{ question.title }}</h2>
+
+<table>
+     <tbody>
+     {% for reponse in question.reponses %}
+         <tr>
+             <td>
+                 <b>Réponse de {{ reponse.user.username }}</b>
+                 <br>
+                 {{ reponse.body }}
+             </td>
+         </tr>
+     {% endfor %}
+</table>
+{% endblock %}
