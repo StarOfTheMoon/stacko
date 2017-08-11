@@ -3,6 +3,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Question;
+use AppBundle\Entity\Reponse;
+use AppBundle\Form\ReponseType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -10,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Knp\Component\Pager\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
 /**
  * Question controller.
  *
@@ -63,18 +67,40 @@ class QuestionController extends Controller
      * Finds and displays a question entity.
      *
      * @Route("/{id}", name="question_show")
+     * @Security("has_role('ROLE_USER')")
      * @ParamConverter("question", class="AppBundle:Question")
-     * @Method("GET")
      */
-    public function showAction(Question $question)
+    public function showAction(Question $question, Request $request, ObjectManager $em)
     {
         $deleteForm = $this->createDeleteForm($question);
 
+        $form = $this->createForm(ReponseType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $reponse = $form->getData();
+            $reponse->setUser($this->getUser());
+            $reponse->setQuestion($question);
+            $em->persist($reponse);
+            $em->flush();
+
+            $this->addFlash(
+                'notice',
+                'Votre réponse a été ajoutée. Merci.'
+            );
+
+            return $this->redirectToRoute('question_show', [
+                'id'=>$question->getId()
+            ]);
+        }
+ 
         return $this->render('question/show.html.twig', array(
             'question' => $question,
+            'form' => $form->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
-    }
+      }
 
     /**
      * Displays a form to edit an existing question entity.
@@ -135,5 +161,25 @@ class QuestionController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+
+    /**
+     * Add a vote to a reponse entity.
+     *
+     * @Route("/reponse/{id}/vote/{vote}", name="reponse_vote", requirements={"vote": "▲|▼"})
+     * @Security("has_role('ROLE_USER')")
+     * @ParamConverter("reponse", class="AppBundle:Reponse")
+     */
+    public function voteAction(Reponse $reponse, $vote, ObjectManager $em)
+    {
+        $current_vote = $reponse->getVote();
+        $new_vote = $vote == "▲" ?$current_vote : --$current_vote ;
+        $reponse->setVote($new_vote);
+        $em->persist($reponse);
+        $em->flush();
+        return $this->redirectToRoute('question_show', [
+            'id' => $reponse->getQuestion()->getId()
+        ]);
+
     }
 }

@@ -38,6 +38,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes: 
+        - 'foundation_5_layout.html.twig'
 
 # Doctrine Configuration
 doctrine:
