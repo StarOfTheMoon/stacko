@@ -117,7 +117,12 @@ class QuestionController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('question_edit', array('id' => $question->getId()));
+            $this->addFlash(
+                'notice',
+                'Votre question a bien été éditée. Merci.'
+            );
+
+            return $this->redirectToRoute('question_index');
         }
 
         return $this->render('question/edit.html.twig', array(

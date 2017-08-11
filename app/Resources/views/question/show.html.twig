@@ -29,7 +29,7 @@
         <a href="{{ path('question_index') }}">Back to the list</a>
     </li>
     <li>
-        <a href="{{ path('question_edit', { 'id': question.id }) }}">Edit</a>
+        <a class="button" href="{{ path('question_edit', { 'id': question.id }) }}">Edit</a>
     </li>
     <li>
         {{ form_start(delete_form) }}

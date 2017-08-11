@@ -1,0 +1,15 @@
+body{
+	margin: 0 2em;
+}
+
+h2 {
+	color: grey;
+}
+
+ul {
+	list-style-type: none;
+}
+
+.vote .button.tiny {
+    padding: 0.3em 0.6em;
+}
